@@ -5,30 +5,11 @@
     .display-flex-row;
     margin: 0;
 
-
     .name {
         width: 160px;
     }
 
-    .icon {
-        width: 24px;
-        height: 24px;
-        fill: @regular-text-color;
-
-        &.checked {
-            fill: @normal-color;
-        }
-
-        &.warning {
-            fill: @warning-color;
-        }
-
-        &.alarm {
-            fill: @alarm-color;
-        }
-    }
-
-    .datetime {
+    .time {
         padding: 0.25rem;
         outline: none;
         border: 1px solid @hide-text-color;
@@ -37,13 +18,9 @@
         .regular-family;
         font-size: .85rem;
 
-
         &::placeholder {
             font-size: .85rem;
             color: @hide-text-color;
         }
-
-
     }
-
 }

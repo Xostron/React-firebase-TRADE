@@ -1,0 +1,33 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: 450px;
+    height: 258.44px;
+    padding: 8px;
+    overflow-y: auto;
+
+
+
+    /***************** CUSTOM SCROLL ***********************/
+    /* ширина scrollbar */
+    &::-webkit-scrollbar {
+        width: .3rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+        border-radius: 0px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        /* закругления плашки */
+        border-radius: 10px;
+        /* цвет плашки */
+        background: linear-gradient(180deg, @hide-text-color, @navbar-icon-color);
+        /* border: 3px solid orange; */
+    }
+}

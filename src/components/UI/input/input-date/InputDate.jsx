@@ -12,7 +12,8 @@ export const InputDate = ({ props }) => {
         changeHandler,
         blurHandler,
         checked,
-        propsSchedular
+        propsSchedular,
+        typeTime
     } = props
 
     let styleIcon = style.icon
@@ -54,13 +55,13 @@ export const InputDate = ({ props }) => {
             }
 
             <input
+                className={style.datetime}
                 name={name}
                 value={value}
-                className={style.datetime}
-                type="datetime-local"
+                type={typeTime || "datetime-local"}
                 onChange={(e) => changeHandler(e)}
                 onBlur={(e) => {
-                    blurHandler()
+                    blurHandler && blurHandler()
                 }}
             />
 

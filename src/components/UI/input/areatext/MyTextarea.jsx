@@ -34,7 +34,7 @@ export const MyTextarea = ({ props }) => {
         e.stopPropagation()
     }
     const blurHandler = (e) => {
-        blurHandlerTextarea(idx, e)
+        blurHandlerTextarea && blurHandlerTextarea(idx, e)
         console.log('blur', idx)
         setTimeout(() => setFocus(false), 500)
         e.stopPropagation()

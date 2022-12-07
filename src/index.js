@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 import 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+
 
 export const firebaseContext = createContext()
 
@@ -22,7 +22,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
 const db = getFirestore(app);
-// const storage = getStorage(app)
+
+// для того чтобы данные сохранялись в cloud firestore нужно,
+// на сайте firebase зайти cloud firestore - Rules и изменить
+// allow read, write: if false; на allow read, write: if true;
+
+//firestorage хранение файлов
+// для запросов на скачивание фалов необходимо настроить CORS:
+// 1. установить gsutil
+// 2. воспользоваться консолью VS и перейти к папке с файлом cors.json cd prj/server
+// 3. выполнить команду:
+// gsutil cors set cors.json gs://<your-cloud-storage-bucket> 
 
 
 const container = document.getElementById('root')
