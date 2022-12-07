@@ -1,7 +1,7 @@
 import React from "react";
-import style from './ListCol.module.less'
+import style from './ListSquare.module.less'
 
-export const ListCol = ({ item, renderItem, }) => {
+export const ListSquare = ({ item, renderItem, }) => {
     const items = item.map(renderItem)
 
     // преобразование 1мерного в 2мерный массив
