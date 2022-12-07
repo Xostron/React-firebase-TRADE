@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate } from 'react-router-dom'
-// import { TaskItem } from "../components/task/TaskItem"
-import { ListCol } from "../components/UI/list/list-column/ListCol"
-// import { BtnIcon } from '../components/UI/button/btn-icon/BtnIcon'
+import { ListSquare } from "../components/UI/list/list-column/ListSquare"
+import { BtnIcon } from '../components/UI/button/btn-icon/BtnIcon'
 import { Title } from "../components/title/Title"
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useContext } from "react"
 import { firebaseContext } from ".."
-// import iDel from '../source/icons/bx-trash-alt.svg'
-// import iAdd from '../source/icons/bx-plus.svg'
-// import { collection, addDoc, getDocs, serverTimestamp, orderBy, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import iDel from '../source/icons/bx-trash-alt.svg'
+import iAdd from '../source/icons/bx-plus.svg'
+import { collection, addDoc, getDocs, serverTimestamp, orderBy, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { useSchedular } from "../hooks/useSchedular"
 import { CardRoom } from "../components/card-room/CardRoom"
-
+import { MyModal } from '../components/UI/modal/MyModal'
+import { CardFormCreate } from "../components/card-form-create/CardFormCreate"
 
 
 export const TradesPage = () => {
@@ -23,12 +23,20 @@ export const TradesPage = () => {
     const { currentTime } = useSchedular(callbackSchedular, 1000)
 
     // данные из БД
-    const [rooms, setrooms] = useState([{ a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }])
+    const [rooms, setRooms] = useState([])
     // модифицированные
     const [propsRooms, setPropsRooms] = useState([])
     const [timersSchedular, setTimersSchedular] = useState([])
-
-
+    // states
+    const [modalCreate, setModalCreate] = useState(false)
+    const [itemRoom, setItemRoom] = useState({
+        id: '',
+        title: '',
+        dateBegin: '',
+        dateFinish: '',
+        durationRound: '00:02:00',
+        createRoom: ''
+    })
     // ******************************SHEDULER******************************
     function callbackSchedular() {
         console.log('TradesPage schedular')
@@ -40,8 +48,45 @@ export const TradesPage = () => {
     const handlerEnterAsPlayer = () => {
         console.log('TradesPage handler as watch')
     }
-
+    const changeHandlerForm = (e) => {
+        // console.log(e.target.name, e.target.value)
+        setItemRoom({ ...itemRoom, [e.target.name]: e.target.value })
+    }
     // ****************************API firebase*****************************
+    // получить все комнаты
+    const getRooms = async () => {
+        // для использования в запросе where и orderBy одновременно, возможно, 
+        // надо будет проиндексировать БД, 
+        // сгенерируется ошибка со ссылкой на индексирование БД
+        //  let q = query(collection(db, "rooms"), where("uid", "==", user.uid), orderBy('createAT', 'desc'))
+        let q = query(collection(db, "rooms"), orderBy('createAT', 'desc'))
+        const querySnapshot = await getDocs(q)
+        console.log('query', q)
+        querySnapshot.forEach((doc) => {
+            let data = { ...doc.data(), id: doc.id }
+            setRooms((prev) => [...prev, data])
+        })
+    }
+    // создание комнаты
+    const saveRoomHandler = async () => {
+        // setRooms([...rooms, itemRoom])
+        console.log(itemRoom)
+        try {
+            const docRef = await addDoc(collection(db, "rooms"), {
+                title: itemRoom.title,
+                dateBegin: itemRoom.dateBegin,
+                dateFinish: itemRoom.dateFinish,
+                durationRound: itemRoom.durationRound,
+                createAT: serverTimestamp()
+            });
+            console.log("Document written with ID: ", docRef.id);
+            // присваиваем id Комнате для последующих операций обновления
+            // setRooms
+            // setTasks(tasks.map((val, index) => index === idx ? { ...val, id: docRef.id } : val))
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    }
     // // удалить задачу
     // const delTask = async (idx) => {
     //     console.log('delete api = ', idx)
@@ -88,29 +133,6 @@ export const TradesPage = () => {
     //     })
 
     // }
-    // // создать одну задачу
-    // const saveTask = async (idx) => {
-    //     console.log('saveTask = ', tasks[idx])
-    //     try {
-    //         const docRef = await addDoc(collection(db, "tasks"), {
-    //             uid: tasks[idx].uid,
-    //             title: tasks[idx].title,
-    //             info: tasks[idx].info,
-    //             dateBegin: tasks[idx].dateBegin,
-    //             dateFinish: tasks[idx].dateFinish,
-    //             checked: tasks[idx].checked,
-    //             createAT: serverTimestamp()
-    //         });
-    //         console.log("Document written with ID: ", docRef.id);
-    //         // присваиваем id задаче для последующих операци обновления
-    //         setTasks(tasks.map((val, index) => index === idx ? { ...val, id: docRef.id } : val))
-    //     } catch (e) {
-    //         console.error("Error adding document: ", e);
-    //     }
-    //     // console.log('save = ', saveId)
-
-    // }
-
     // const saveOrUpdTask = async (idx) => {
     //     console.log('saveOrUpd = ', tasks[idx].id, tasks[idx])
     //     if (tasks[idx].id === '') {
@@ -120,10 +142,23 @@ export const TradesPage = () => {
     //         updTask(idx)
     //     }
     // }
+    // ****************************API firebase*****************************
+
+    // *******************************EFFECT*******************************
+    useEffect(() => {
+        getRooms()
+    }, [])
+    // обновление пропсов для ListSquare
+    useEffect(() => {
+        rooms && setPropsRooms(rooms.map(cbPropsRoom))
+        console.log('rooms', rooms)
+    }, [rooms])
+    console.log('time = ', new Date().toLocaleString())
     // *********************************Props**********************************
     const titleProps = {
         title: 'Текущие торги'
     }
+
     const cbPropsRoom = (room, idx) => ({
         idx,
         room,
@@ -131,21 +166,53 @@ export const TradesPage = () => {
         handlerEnterAsPlayer,
         timer: timersSchedular[idx]
     })
-    const callbackRenderRoom = (room, idx) => {
-        return (
-            <CardRoom key={idx} props={room} />
-        )
+
+    const propsFormCreate = {
+        itemRoom,
+        saveRoomHandler,
+        IPropsTitle: {
+            name: 'title',
+            placeholder: 'Введите название лота...',
+            changeHandler: changeHandlerForm,
+            value: itemRoom.title,
+            type: true
+        },
+        IPropsDateBegin: {
+            name: 'dateBegin',
+            placeholder: 'Начало торгов',
+            changeHandler: changeHandlerForm,
+            value: itemRoom.dateBegin
+        },
+        IPropsDateFinish: {
+            name: 'dateFinish',
+            placeholder: 'Окончание торгов',
+            changeHandler: changeHandlerForm,
+            value: itemRoom.dateFinish
+        },
+        IPropsDuration: {
+            name: 'durationRound',
+            placeholder: 'Длительность хода',
+            changeHandler: changeHandlerForm,
+            value: itemRoom.durationRound
+        }
     }
-    // *******************************EFFECT*******************************
-    // обновление пропсов для ListCol
-    useEffect(() => {
-        rooms && setPropsRooms(rooms.map(cbPropsRoom))
-    }, [rooms])
 
     return (
         <div>
-            <Title props={titleProps} />
-            <ListCol item={propsRooms} renderItem={callbackRenderRoom} />
+
+            <Title props={titleProps}>
+                <BtnIcon icon={iAdd} handler={() => { setModalCreate(true) }} />
+            </Title>
+
+            <ListSquare item={propsRooms} renderItem={(room, idx) => {
+                return (
+                    <CardRoom key={idx} props={room} />
+                )
+            }} />
+
+            <MyModal visibleId={modalCreate} setVisibleId={setModalCreate}>
+                <CardFormCreate props={propsFormCreate} />
+            </MyModal>
         </div>
     )
 }
