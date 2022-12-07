@@ -1,0 +1,60 @@
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    /* background: rgba(209, 63, 63, 0.473); */
+    top: 0;
+    left: 0;
+    display: flex;
+    // align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .5s;
+
+    &.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+
+
+.content {
+    display: flex;
+    position: relative;
+    top: 100px;
+    height: fit-content;
+    width: fit-content;
+    justify-content: center;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.438);
+    transform: translateY(100%);
+    transition: transform .4s;
+    border-radius: 10px;
+
+    &.active {
+        transform: translateY(0%);
+    }
+
+}
+
+
+/***************VIEW ROUTES TABLET*****************/
+@media screen and (max-width:1050px) {
+    .content {
+        width: 95vw;
+        /* background-color: rgba(164, 250, 66, 0.589); */
+    }
+
+}
+
+/***************VIEW ROUTES MOBILE*****************/
+@media screen and (max-width:580px) {
+    .content {
+        width: calc(100vw);
+        /* background-color: rgba(243, 138, 67, 0.466); */
+    }
+
+
+}
