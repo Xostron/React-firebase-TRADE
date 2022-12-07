@@ -1,0 +1,44 @@
+@import '../../../style/color.less';
+@import '../../../style/layout.less';
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 1px solid @regular-text-color;
+    cursor: pointer;
+
+    &.active {
+        border: 0;
+        background-color: @normal-color;
+    }
+
+    &:hover {
+        border-color: @normal-color;
+    }
+
+
+}
+
+
+
+.toggle {
+    display: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: @active-text-color;
+
+    &.active {
+        display: flex;
+    }
+}
+
+
+
+
+.hiddenParent {
+    position: absolute;
+    visibility: hidden;
+}

@@ -1,0 +1,73 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .myInput {
+        width: 100%;
+        outline: none;
+        padding: .5rem;
+        padding-right: 2rem;
+        background-color: transparent;
+        font-size: .85rem;
+        border: 0;
+        border-bottom: .15rem solid @hide-text-color;
+        color: @regular-text-color;
+        // background-color: aquamarine;
+
+        &::placeholder {
+            color: @hide-text-color;
+        }
+
+        &.active {
+            color: @hide-text-color;
+            text-decoration: line-through;
+            text-decoration-color: @normal-color;
+
+        }
+    }
+
+    .iconEnd {
+        left: calc(100%);
+        transform: translateX(-100%);
+        position: absolute;
+        width: 1.4rem;
+        height: 1.4rem;
+        fill: @regular-text-color;
+        transition: fill .2s ease;
+
+        &:hover {
+            fill: @navbar-icon-color;
+        }
+    }
+}
+
+
+
+
+
+
+// .iconEnd {
+//     left: calc(100%);
+//     transform: translateX(-100%);
+// }
+
+// .iconEnd:hover {
+//     fill: #ffd900;
+//     transition: fill .2s ease;
+// }
+
+// .myInput:focus+.iconStart {
+//     fill: #256ce1;
+//     transition: fill .2s ease;
+// }
+
+// .myInput:focus {
+//     border-color: #256ce1;
+//     color: #256ce1;
+//     transition: all .2s ease;
+// }

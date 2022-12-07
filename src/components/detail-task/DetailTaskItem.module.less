@@ -1,0 +1,57 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+.container {
+    .display-flex-column;
+    row-gap: .5rem;
+    height: auto;
+
+    .description {
+        padding-top: .5rem;
+        .display-flex-column;
+        row-gap: .5rem;
+        height: auto;
+    }
+
+    .inputFile {
+        display: flex;
+    }
+
+    .time {
+        .display-flex-column;
+        row-gap: .25rem;
+
+        hr {
+            border-color: @hide-text-color;
+        }
+
+        .time2 {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 2.4rem;
+        }
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        fill: @regular-text-color;
+    }
+
+    .files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        row-gap: 0;
+    }
+
+    .todo {
+        .display-flex-column;
+
+        .todo2 {
+            margin-left: 1.3rem;
+        }
+    }
+}

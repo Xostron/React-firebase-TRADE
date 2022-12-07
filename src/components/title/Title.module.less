@@ -1,0 +1,51 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+.title {
+    display: flex;
+    padding: .5rem 0;
+    width: 100%;
+    height: auto;
+    justify-content: space-between;
+    // align-items: center;
+    // background-color: bisque;
+}
+
+.left {
+    // width: 100%;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.text_span {
+    .regular-family;
+}
+
+.icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    fill: #5f5f5f;
+    transition: fill .2s ease-in-out;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+        .icon {
+            fill: @icon-color;
+        }
+    }
+}

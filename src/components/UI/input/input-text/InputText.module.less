@@ -1,0 +1,26 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+
+
+    .myInput {
+        display: flex;
+        align-items: flex-end;
+        width: 100%;
+        outline: none;
+        padding-left: .5rem;
+        padding-top: 1rem;
+        padding-right: 2rem;
+        padding-bottom: 0rem;
+        color: @regular-text-color;
+        background-color: transparent;
+        font-size: .85rem;
+        border: none;
+        // background-color: aquamarine;
+
+        &::placeholder {
+            color: @hide-text-color;
+        }
+    }
+}

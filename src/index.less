@@ -1,0 +1,128 @@
+@import './style/color.less';
+@import './style/layout.less';
+
+html {
+  font-size: 18px;
+  font-family: 'roboto';
+  min-width: 343px;
+  box-sizing: border-box;
+  color: @regular-text-color;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+/************ очистка стилей браузера по-умолчанию ***********/
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* MOBILE - убрать горизонтальный скролл */
+html,
+body {
+  overflow-x: hidden;
+  max-height: 100vh;
+}
+
+body {
+  position: relative;
+  overflow-y: scroll;
+}
+
+/**************VIEW ROUTES DESKTOP****************/
+main {
+  padding-top: 10px;
+  max-width: 85vw;
+  margin: 0 auto;
+}
+
+
+
+/***************VIEW ROUTES TABLET*****************/
+@media screen and (max-width:1050px) {
+  main {
+    max-width: 90vw;
+  }
+
+  html {
+    font-size: 17px;
+  }
+}
+
+/***************VIEW ROUTES MOBILE*****************/
+@media screen and (max-width:579.98px) {
+  main {
+    max-width: 96vw;
+  }
+
+  html {
+    font-size: 16px;
+  }
+}
+
+
+/***************** CUSTOM SCROLL ***********************/
+/* ширина scrollbar */
+body::-webkit-scrollbar {
+  width: .3rem;
+
+}
+
+/* цвет дорожки */
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+  /* background-color: #f9f9fd; */
+  border-radius: 0px;
+}
+
+body::-webkit-scrollbar-thumb {
+  /* закругления плашки */
+  border-radius: 10px;
+  /* цвет плашки */
+  background: linear-gradient(180deg, @hide-text-color, @navbar-icon-color);
+  /* border: 3px solid orange; */
+}
+
+// ********************hr***********************
+hr {
+  border: none;
+  border-top: solid 1.5px;
+  border-color: @navbar-icon-color;
+}
+
+.about {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+h4 {
+  color: @regular-text-color;
+  padding: 8px 0px;
+}
+
+ul {
+  list-style-position: inside;
+}
+
+li {
+  color: @base-text-color;
+  line-height: 1.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: #8d7f02;
+  font-weight: 500;
+}

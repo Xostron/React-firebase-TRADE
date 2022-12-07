@@ -1,0 +1,47 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+    .display-flex-row;
+    margin: 0;
+
+
+    .name {}
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        fill: @regular-text-color;
+
+        &.checked {
+            fill: @normal-color;
+        }
+
+        &.warning {
+            fill: @warning-color;
+        }
+
+        &.alarm {
+            fill: @alarm-color;
+        }
+    }
+
+    .datetime {
+        padding: 0.25rem;
+        outline: none;
+        border: 0px solid @hide-text-color;
+        border-radius: .5rem;
+        color: @regular-text-color;
+        .regular-family;
+        font-size: .85rem;
+
+
+        &::placeholder {
+            font-size: .85rem;
+            color: @hide-text-color;
+        }
+
+
+    }
+
+}

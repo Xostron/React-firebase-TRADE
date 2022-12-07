@@ -1,0 +1,36 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.myLink {
+    display: flex;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 16px;
+    align-items: center;
+    color: @navbar-icon-color;
+
+    .navText {
+        margin-left: 8px;
+    }
+
+    .navIcon {
+        fill: @regular-text-color;
+    }
+
+    &:hover {
+        transition: color, fill .2s ease-in-out;
+
+        .navIcon {
+            fill: @active-text-color;
+        }
+    }
+}
+
+
+.myLink.active {
+    color: @active-text-color;
+
+    .navIcon {
+        fill: @active-text-color;
+    }
+}

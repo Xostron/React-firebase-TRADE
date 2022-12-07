@@ -1,0 +1,71 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+
+.container {
+    height: 50px;
+    background-color: @icon-color;
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+        .display-flex-row;
+    }
+
+    h2 {
+        color: spin(@navbar-icon-color, 0%);
+    }
+
+    .right {
+        .display-flex-row;
+    }
+}
+
+
+
+.template-status {
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+}
+
+.online {
+    .template-status;
+    background-color: #ffffff;
+}
+
+.offline {
+    .template-status;
+    background-color: #e03c30;
+}
+
+
+.child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    border-radius: 50%;
+
+    &:hover {
+        .tooltipUser {
+            color: #ece919;
+        }
+    }
+
+    .photoUser {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .tooltipUser {
+        // position: absolute;
+        // left: -200px;
+        color: #ffffff;
+        transition: color .4s ease-in-out;
+    }
+
+}

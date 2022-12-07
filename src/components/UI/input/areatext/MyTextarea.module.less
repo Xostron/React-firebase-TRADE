@@ -1,0 +1,52 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    // background-color: aquamarine;
+
+    .myTextarea {
+        .regular-family;
+        padding: .5rem .5rem;
+        padding-right: 1.5rem;
+        width: 100%;
+        height: auto;
+        resize: none;
+        border: 0;
+        border-bottom: 1px solid transparent;
+        background-color: transparent;
+        outline: none;
+        overflow-y: hidden;
+
+        &::placeholder {
+            color: @hide-text-color;
+        }
+
+        &.active {
+            color: @hide-text-color;
+            text-decoration: line-through;
+        }
+
+        &.onBorder {
+            border-bottom: 1px solid @hide-text-color;
+        }
+    }
+
+    .iconEnd {
+        left: calc(100%);
+        transform: translateX(-100%);
+        top: .4rem;
+        position: absolute;
+        width: 1.3rem;
+        height: 1.3rem;
+        fill: @regular-text-color;
+        transition: fill .2s ease;
+
+        &:hover {
+            fill: @navbar-icon-color;
+        }
+    }
+}

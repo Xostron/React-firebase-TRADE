@@ -1,0 +1,21 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+    .regular-family;
+    outline: none;
+    border: 1px solid @navbar-icon-color;
+    background-color: transparent;
+    border-radius: .5rem;
+    padding: .4rem;
+    cursor: pointer;
+    width: 5rem;
+    color: @navbar-icon-color;
+    transition-property: font-color, border-color;
+    transition: .2s ease;
+}
+
+.container:hover {
+    border-color: @active-text-color;
+    color: @active-text-color;
+}

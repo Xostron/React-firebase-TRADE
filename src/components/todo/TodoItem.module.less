@@ -1,0 +1,24 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+.container {
+    display: flex;
+    align-items: baseline;
+    width: 100%;
+    position: relative;
+
+    .left {
+        left: 1.3rem;
+        transform: translateX(-100%);
+        top: .4rem;
+        position: absolute;
+        width: 1.3rem;
+        height: 1.3rem;
+        z-index: 10;
+    }
+
+    .right {
+        margin-left: 1.3rem;
+        width: 100%;
+    }
+}

@@ -1,0 +1,28 @@
+@import '../../../../style/color.less';
+@import '../../../../style/layout.less';
+
+.container {
+    display: flex;
+    width: auto;
+    height: auto;
+    border: 1px solid @hide-text-color;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color .2s ease-in-out;
+
+    &:hover {
+        border-color: @normal-color;
+    }
+
+    .icon {
+        width: 1.4rem;
+        height: 1.4rem;
+        fill: @hide-text-color;
+        cursor: pointer;
+        transition: fill .2s ease-in-out;
+
+        &:hover {
+            fill: @alarm-color;
+        }
+    }
+}
