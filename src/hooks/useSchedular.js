@@ -20,9 +20,10 @@ export const useSchedular = (callback, delay) => {
             updCallback.current()
             setCurrentTime(new Date())
         }
-
-        let id = setInterval(schedular, delay)
-        return () => clearInterval(id)
-    }, [])
+        if (delay != null) {
+            let id = setInterval(schedular, delay)
+            return () => clearInterval(id)
+        }
+    }, [delay])
     return { currentTime }
 }
