@@ -48,7 +48,7 @@ export const MyTextarea = ({ props }) => {
         let val = Number(str.join(''))
 
         if (ref.current.value === '') {
-            ref.current.style.height = '38px'
+            ref.current.style.height = '39px'
         }
         else if (ref.current.scrollHeight > val) {
             ref.current.style.height = `${ref.current.scrollHeight}px`

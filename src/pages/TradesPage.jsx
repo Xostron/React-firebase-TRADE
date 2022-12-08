@@ -13,6 +13,7 @@ import { useSchedular } from "../hooks/useSchedular"
 import { CardRoom } from "../components/card-room/CardRoom"
 import { MyModal } from '../components/UI/modal/MyModal'
 import { CardFormCreate } from "../components/card-form-create/CardFormCreate"
+import { DetailTradePage } from "./DetailTradePage"
 
 
 export const TradesPage = () => {
@@ -24,11 +25,14 @@ export const TradesPage = () => {
 
     // данные из БД
     const [rooms, setRooms] = useState([])
+
     // модифицированные
     const [propsRooms, setPropsRooms] = useState([])
     const [timersSchedular, setTimersSchedular] = useState([])
+    const [propsDetailRoom, setPropsDetailRoom] = useState({})
     // states
     const [modalCreate, setModalCreate] = useState(false)
+    const [modalRoom, setModalRoom] = useState(false)
     const [itemRoom, setItemRoom] = useState({
         id: '',
         title: '',
@@ -42,14 +46,20 @@ export const TradesPage = () => {
         console.log('TradesPage schedular')
     }
     // ******************************HANDLERS******************************
-    const handlerEnterAsWatch = () => {
-        console.log('TradesPage handler as watch')
+
+    const handlerEnterAsWatch = (idx) => {
+        console.log('TradesPage handler as watch', idx)
+        setModalRoom(true)
+        setPropsDetailRoom(cbPropsDetailRoom(idx))
     }
-    const handlerEnterAsPlayer = () => {
-        console.log('TradesPage handler as watch')
+
+    const handlerEnterAsPlayer = (idx) => {
+        console.log('TradesPage handler as player', idx)
+        setPropsDetailRoom(cbPropsDetailRoom(idx))
+        setModalRoom(true)
     }
+
     const changeHandlerForm = (e) => {
-        // console.log(e.target.name, e.target.value)
         setItemRoom({ ...itemRoom, [e.target.name]: e.target.value })
     }
     // ****************************API firebase*****************************
@@ -145,20 +155,25 @@ export const TradesPage = () => {
     // ****************************API firebase*****************************
 
     // *******************************EFFECT*******************************
+
     useEffect(() => {
         getRooms()
     }, [])
+
     // обновление пропсов для ListSquare
     useEffect(() => {
         rooms && setPropsRooms(rooms.map(cbPropsRoom))
         console.log('rooms', rooms)
     }, [rooms])
-    console.log('time = ', new Date().toLocaleString())
+
+    console.log("modal room", modalRoom, propsDetailRoom)
+
     // *********************************Props**********************************
+    // оглавление
     const titleProps = {
         title: 'Текущие торги'
     }
-
+    // формирование props для отображения карточек-комнат CardRoom
     const cbPropsRoom = (room, idx) => ({
         idx,
         room,
@@ -166,7 +181,7 @@ export const TradesPage = () => {
         handlerEnterAsPlayer,
         timer: timersSchedular[idx]
     })
-
+    // props для формы создания комнаты
     const propsFormCreate = {
         itemRoom,
         saveRoomHandler,
@@ -196,6 +211,10 @@ export const TradesPage = () => {
             value: itemRoom.durationRound
         }
     }
+    // формирование props для просмотра комнаты в DetailRoomPage 
+    const cbPropsDetailRoom = (idx) => ({
+        room: rooms[idx]
+    })
 
     return (
         <div>
@@ -213,6 +232,12 @@ export const TradesPage = () => {
             <MyModal visibleId={modalCreate} setVisibleId={setModalCreate}>
                 <CardFormCreate props={propsFormCreate} />
             </MyModal>
+
+            <MyModal visibleId={modalRoom} setVisibleId={setModalRoom}>
+                <DetailTradePage props={propsDetailRoom} />
+            </MyModal>
+
+
         </div>
     )
 }

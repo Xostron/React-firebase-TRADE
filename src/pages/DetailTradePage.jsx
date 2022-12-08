@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import style from './DetailTradePage.module.less'
 // import iBack from '../source/icons/bx-x.svg'
 // import iDel from '../source/icons/bx-trash-alt.svg'
 // import { DetailTaskItem } from "../components/detail-task/DetailTaskItem.jsx"
@@ -9,20 +10,41 @@ import { firebaseContext } from ".."
 // import { useSchedular } from "../hooks/useSchedular"
 // import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "firebase/storage";
 
-export const DetailTradePage = () => {
+export const DetailTradePage = ({ props }) => {
+    const {
+        room,
+        timer
+    } = props
     // const { state } = useLocation()
-    const { id } = useParams()
-    const history = useNavigate()
+    // const { id } = useParams()
+    // const history = useNavigate()
     // const [schedularState, setSchedularState] = useState({ state: 'none' })
     // const { db, storage } = useContext(firebaseContext)
 
     // ******************************SHEDULER******************************
 
-    // console.log('GET FILE = ', files)
+    let begin = new Date(room.dateBegin).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
+    let finish = new Date(room.dateFinish).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
     return (
-        <div>
-            Комната {id}
+        <>
+            {room ?
+                <div className={style.container}>
+                    <div className={style.info}>
+                        <span>{room.title}</span>
+                        <span>Начало торгов {begin}</span>
+                        <span>Окончание торгов {finish}</span>
+                        <span>{timer}</span>
+                    </div>
+                    <div className={style.players}>
 
-        </div>
+                    </div>
+
+                </div>
+                :
+                <div className={style.container}>
+                    Комната не найдена!
+                </div>
+            }
+        </>
     )
 }
