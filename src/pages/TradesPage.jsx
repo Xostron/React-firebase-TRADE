@@ -20,7 +20,7 @@ export const TradesPage = () => {
     // hooks
     const { auth, db } = useContext(firebaseContext)
     const [user] = useAuthState(auth)
-    // const { currentTime } = useSchedular(callbackSchedular, 1000)
+    const { currentTime } = useSchedular(() => callbackSchedular(), 1000)
     const [roomPlayers, setRoomPlayers] = useState([])
     // данные из БД
     const [rooms, setRooms] = useState([])
@@ -40,9 +40,39 @@ export const TradesPage = () => {
         durationRound: '00:02:00',
         createRoom: ''
     })
+    // оставшееся время хода
+    const [remainingTime, setRemainingTime] = useState({})
+
     // ******************************SHEDULER******************************
+    const [forTimer, setForTimer] = useState({})
     function callbackSchedular() {
-        console.log('TradesPage schedular')
+        // console.log('TradesPage schedular', remainingTime)
+        // setRemainingTime(new Date(currentTime).toISOString())
+        if (modalRoom) {
+            // console.log('SHEDULAR = ', Date.parse(currentTime), propsDetailRoom.room)
+            let begin = Date.parse(propsDetailRoom.room.dateBegin)
+            let finish = Date.parse(propsDetailRoom.room.dateFinish)
+            let totalTime = finish - begin
+            let elapsedTime = Date.parse(currentTime) - begin
+            // console.log('SHEDULAR TOTAL = ', totalTime)
+            // console.log('SHEDULAR ELAPSED= ', elapsedTime)
+            let roundBig = Date.parse('2022-12-10T' + propsDetailRoom.room.durationRound)
+            let roundZero = Date.parse('2022-12-10T00:00:00')
+            let round = roundBig - roundZero
+            // console.log('SHEDULAR ROUND= ', round)
+            let countRound = parseInt(elapsedTime / round)
+            let moduloRound = elapsedTime % round
+            let remaining = round - moduloRound
+            // console.log('SHEDULAR ROUND= ', countRound, remaining)
+            let hh = parseInt(remaining / 3600000)
+            let mm = parseInt((remaining - hh * 3600000) / 60000)
+            let ss = (remaining - hh * 3600000 - mm * 60000) / 1000
+            console.log('SHEDULAR ROUND= ', countRound, remaining, `${hh}:${mm}:${ss}`)
+            setRemainingTime({ hh, mm, ss, countRound })
+        }
+        else {
+
+        }
     }
     // ******************************HANDLERS******************************
 
@@ -299,7 +329,7 @@ export const TradesPage = () => {
     const cbPropsDetailRoom = (idx) => ({
         room: rooms[idx],
         uid: user ? user.uid : null,
-        timer: 'schedular'
+        isOpen: true,
     })
     // console.log('PAGE = ', rooms)
     return (
@@ -329,7 +359,7 @@ export const TradesPage = () => {
             </MyModal>
 
             <MyModal visibleId={modalRoom} setVisibleId={setModalRoom}>
-                <DetailTradePage props={propsDetailRoom} />
+                <DetailTradePage props={propsDetailRoom} timer={remainingTime} />
             </MyModal>
 
 

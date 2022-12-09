@@ -13,6 +13,7 @@ export const PlayersTable = ({ props }) => {
         players,
         uid,
         idRoom,
+        isOpen
     } = props
     const { auth, db } = useContext(firebaseContext)
     // игроки
@@ -112,7 +113,7 @@ export const PlayersTable = ({ props }) => {
         changeHandler: (e) => changeHandlerRow(e, idx)
     })
 
-    // console.log('TABLE =', convertPlayers, players)
+    // console.log('TABLE =', convertPlayers, players, isOpen)
     return (
         <div>
             <table>
