@@ -11,7 +11,8 @@ export const PlayersTable = ({ props }) => {
 
     const {
         players,
-        uid
+        uid,
+        idRoom,
     } = props
     const { auth, db } = useContext(firebaseContext)
     // игроки
@@ -37,11 +38,12 @@ export const PlayersTable = ({ props }) => {
         }
         setConvertPlayers(arrPlayers)
     }, [players])
+
     // ****************************API firebase*****************************
     // обновить данные - игрок
     const updPlayer = async (idx) => {
-        // получить id
-        let q = query(collection(db, "players"), where("uid", "==", uid))
+        // получить id players-room
+        let q = query(collection(db, "players"), where("uid", "==", uid), where('idRoom', '==', idRoom))
         const querySnapshot = await getDocs(q)
         // console.log('query', q)
         let idConnect
@@ -51,7 +53,7 @@ export const PlayersTable = ({ props }) => {
         })
         // обновить
 
-        console.log('upd = ', convertPlayers[idx], convertPlayers[idx].row2)
+        // console.log('upd = ', convertPlayers[idx], convertPlayers[idx].row2)
         const DocRef = doc(db, "players", idConnect);
         await updateDoc(DocRef, {
             row1: convertPlayers[idx].row1,
@@ -61,12 +63,13 @@ export const PlayersTable = ({ props }) => {
             row5_1: Number(convertPlayers[idx].row5_1),
             row5_2: Number(convertPlayers[idx].row5_2),
             row5_3: Number(convertPlayers[idx].row5_3),
-            online: convertPlayers[idx].online,
+            // online: convertPlayers[idx].online,
         });
     }
+
     // *********************************HANDLER*********************************
     const changeHandlerRow = (e, idx) => {
-        console.log(e.target.name, e.target.value)
+        // console.log(e.target.name, e.target.value)
         setConvertPlayers(convertPlayers.map((val, index) => index === idx ?
             { ...val, [e.target.name]: e.target.value } : val))
     }
@@ -124,7 +127,7 @@ export const PlayersTable = ({ props }) => {
                                 <div className={style.column}>
                                     <span>{val.name}</span>
                                     <span>{val.email}</span>
-                                    <span style={{ fontWeight: '400' }}>{val.online}</span>
+                                    {/* <span style={{ fontWeight: '400' }}>{val.online}</span> */}
 
                                 </div>
 
@@ -221,7 +224,11 @@ export const PlayersTable = ({ props }) => {
                         {convertPlayers.map((val, idx) => {
                             return (<td align='center' key={idx}>
                                 {val.uid === uid ?
-                                    <BtnText onClick={() => { updPlayer(idx) }}>
+                                    <BtnText
+                                        onClick={() => {
+                                            console.log('UPD')
+                                            updPlayer(idx)
+                                        }}>
                                         Подтвердить
                                     </BtnText>
                                     :

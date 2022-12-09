@@ -13,6 +13,7 @@ export const CardFormCreate = ({ props }) => {
     const {
         itemRoom,
         saveRoomHandler,
+        setModalCreate,
         IPropsTitle,
         IPropsDateBegin,
         IPropsDateFinish,
@@ -41,7 +42,10 @@ export const CardFormCreate = ({ props }) => {
             {/* <InputText props={IPropsDuration} /> */}
             <InputTimeHMS props={IPropsDuration} />
             <BtnText
-                onClick={saveRoomHandler}
+                onClick={() => {
+                    saveRoomHandler()
+                    setModalCreate(false)
+                }}
                 disabled={disable}
             >
                 Сохранить

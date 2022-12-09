@@ -1,15 +1,8 @@
 import React, { useEffect, useState, useContext } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
 import style from './DetailTradePage.module.less'
-// import iBack from '../source/icons/bx-x.svg'
-// import iDel from '../source/icons/bx-trash-alt.svg'
-// import { DetailTaskItem } from "../components/detail-task/DetailTaskItem.jsx"
-
-// import { collection, addDoc, getDocs, serverTimestamp, orderBy, getDoc, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { firebaseContext } from ".."
 import { PlayersTable } from "../components/player-table/PlayersTable"
 // import { useSchedular } from "../hooks/useSchedular"
-// import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "firebase/storage";
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { collection, addDoc, getDocs, serverTimestamp, orderBy, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
 
@@ -20,13 +13,10 @@ export const DetailTradePage = ({ props }) => {
         uid,
         timer,
     } = props
+
     const { auth, db } = useContext(firebaseContext)
-    const [players, loading] = useCollectionData(query(collection(db, 'players')))
-    // const { state } = useLocation()
-    // const { id } = useParams()
-    // const history = useNavigate()
-    // const [schedularState, setSchedularState] = useState({ state: 'none' })
-    // const { db, storage } = useContext(firebaseContext)
+    let idRoom = room ? room.id : 0
+    const [players, loading] = useCollectionData(query(collection(db, 'players'), where('idRoom', '==', idRoom)))
 
     // ******************************SHEDULER******************************
 
@@ -35,25 +25,26 @@ export const DetailTradePage = ({ props }) => {
 
 
 
-    const propsPlayersTable = {
+    let propsPlayerTable = {
         players,
-        uid
+        uid,
+        idRoom,
     }
 
-    console.log("players DETAIL", players, room)
+    // console.log("players DETAIL", players, room)
     return (
         <>
-            {room ?
+            {room && players ?
                 <div className={style.container}>
                     <div className={style.info}>
                         <span>{room.title}</span>
                         <span>Начало торгов {begin}</span>
                         <span>Окончание торгов {finish}</span>
-                        <span>{timer}</span>
+
                     </div>
-                    <div>Ход торгов:</div>
+                    <div>Ход торгов: {timer}</div>
                     <div className={style.players}>
-                        <PlayersTable props={propsPlayersTable} />
+                        <PlayersTable props={propsPlayerTable} />
                     </div>
 
                 </div>

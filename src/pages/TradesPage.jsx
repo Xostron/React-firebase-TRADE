@@ -18,15 +18,13 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 export const TradesPage = () => {
     // hooks
-    const history = useNavigate()
     const { auth, db } = useContext(firebaseContext)
     const [user] = useAuthState(auth)
-    // const [players, loading] = useCollectionData(query(collection(db, 'players')))
     // const { currentTime } = useSchedular(callbackSchedular, 1000)
     const [roomPlayers, setRoomPlayers] = useState([])
     // данные из БД
     const [rooms, setRooms] = useState([])
-    const [isPlayer, setIsPlayer] = useState(false)
+
     // модифицированные
     const [propsRooms, setPropsRooms] = useState([])
     const [timersSchedular, setTimersSchedular] = useState([])
@@ -49,39 +47,43 @@ export const TradesPage = () => {
     // ******************************HANDLERS******************************
 
     const handlerEnterAsWatch = (idx) => {
-        console.log('TradesPage handler as watch', idx, rooms[idx])
+        // console.log('TradesPage handler as watch', idx, rooms[idx])
         setModalRoom(true)
         setPropsDetailRoom(cbPropsDetailRoom(idx))
     }
 
     const handlerEnterAsPlayer = async (idxRoom) => {
-        console.log('TradesPage handler as player', idxRoom)
 
-        // проверка на участника комнаты
-        let isAuthInRoom = await isMyRoom(idxRoom)
+        if (user) {
+            // проверка на участника комнаты
+            let isAuthInRoom = await isMyRoom(idxRoom)
 
-        if (isAuthInRoom === true) {
-            // являюсь участником - заходим
-            let countPlayers = await getPlayers(idxRoom)
-            console.log('являюсь участником', countPlayers)
-        }
-        else {
-            // не являемся участником - проверка на регистрацию (лимит участников)
-            let countPlayers = await getPlayers(idxRoom)
-            console.log('не являюсь участником', countPlayers)
-            if (countPlayers.length >= 5) {
-                // превышен лимит участников - войти как наблюдатель
-                console.log("превышен лимит участников - как наблюдатель")
-
+            if (isAuthInRoom === true) {
+                // являюсь участником - заходим
+                let countPlayers = await getPlayers(idxRoom)
+                // console.log('являюсь участником', countPlayers)
             }
             else {
-                // есть места - регистрируемся и заходим
-                console.log("есть свободные места")
-                savePlayer(idxRoom)
+                // не являемся участником - проверка на регистрацию (лимит участников)
+                let countPlayers = await getPlayers(idxRoom)
+                // console.log('не являюсь участником', countPlayers)
+                if (countPlayers.length >= 5) {
+                    // превышен лимит участников - войти как наблюдатель
+                    // console.log("превышен лимит участников - как наблюдатель")
+
+                }
+                else {
+                    // есть места - регистрируемся и заходим
+                    // console.log("есть свободные места")
+                    savePlayer(idxRoom)
+                }
             }
+            setPropsDetailRoom(cbPropsDetailRoom(idxRoom))
+            setModalRoom(true)
         }
-        setPropsDetailRoom(cbPropsDetailRoom(idxRoom))
-        setModalRoom(true)
+        else {
+            alert('Войдите через аккаунт goole:)')
+        }
     }
 
     const changeHandlerForm = (e) => {
@@ -97,11 +99,12 @@ export const TradesPage = () => {
         //  let q = query(collection(db, "rooms"), where("uid", "==", user.uid), orderBy('createAT', 'desc'))
         let q = query(collection(db, "rooms"), orderBy('createAT', 'desc'))
         const querySnapshot = await getDocs(q)
-        console.log('query', q)
+        // console.log('query', q)
+        let data = []
         querySnapshot.forEach((doc) => {
-            let data = { ...doc.data(), id: doc.id }
-            setRooms((prev) => [...prev, data])
+            data.push({ ...doc.data(), id: doc.id })
         })
+        setRooms(data)
     }
     // создание комнаты
     const saveRoomHandler = async () => {
@@ -116,9 +119,7 @@ export const TradesPage = () => {
                 createAT: serverTimestamp()
             });
             console.log("Document written with ID: ", docRef.id);
-            // присваиваем id Комнате для последующих операций обновления
-            // setRooms
-            // setTasks(tasks.map((val, index) => index === idx ? { ...val, id: docRef.id } : val))
+            getRooms()
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -165,7 +166,7 @@ export const TradesPage = () => {
             return false
         }
     }
-    // запрос являюсь участником комнаты
+    // получить участников (игроков) комнаты
     const getPlayers = async (idxRoom) => {
         try {
             let q = query(collection(db, "players"),
@@ -245,7 +246,7 @@ export const TradesPage = () => {
     // обновление пропсов для ListSquare
     useEffect(() => {
         rooms && setPropsRooms(rooms.map(cbPropsRoom))
-    }, [rooms])
+    }, [rooms, user])
 
     // console.log("modal room", rooms)
     // console.log("players", players)
@@ -267,6 +268,7 @@ export const TradesPage = () => {
     const propsFormCreate = {
         itemRoom,
         saveRoomHandler,
+        setModalCreate,
         IPropsTitle: {
             name: 'title',
             placeholder: 'Введите название лота...',
@@ -296,14 +298,24 @@ export const TradesPage = () => {
     // формирование props для просмотра комнаты в DetailTradePage 
     const cbPropsDetailRoom = (idx) => ({
         room: rooms[idx],
-        uid: user.uid || null,
+        uid: user ? user.uid : null,
+        timer: 'schedular'
     })
-    console.log('PAGE = ', rooms)
+    // console.log('PAGE = ', rooms)
     return (
         <div>
 
             <Title props={titleProps}>
-                <BtnIcon icon={iAdd} handler={() => { setModalCreate(true) }} />
+                <BtnIcon
+                    icon={iAdd}
+                    handler={() => {
+                        user ?
+                            setModalCreate(true)
+                            :
+                            alert('Войдите через аккаунт google:)')
+
+                    }}
+                />
             </Title>
 
             <ListSquare item={propsRooms} renderItem={(room, idx) => {

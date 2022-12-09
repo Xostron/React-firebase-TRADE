@@ -9,7 +9,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 function App() {
   const { auth } = useContext(firebaseContext)
   const [user, loading, error] = useAuthState(auth)
-  console.log('test hook firebase = ', user, loading, error)
+  // console.log('test hook firebase = ', user, loading, error)
 
 
 

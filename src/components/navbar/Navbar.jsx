@@ -30,7 +30,7 @@ export const Navbar = () => {
         const logout = await signOut(auth)
     }
 
-    console.log(user)
+    // console.log(user)
 
     return (
         <div className={style.container}>
