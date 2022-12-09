@@ -2,9 +2,14 @@
 @import '../../../../style/layout.less';
 
 .container {
+    .display-flex-row;
+    margin: 0;
 
+    .name {
+        width: 160px;
+    }
 
-    .myInput {
+    .numb {
         padding: 0.25rem;
         outline: none;
         border: 1px solid @hide-text-color;
@@ -17,7 +22,13 @@
         text-align: center;
 
         &::placeholder {
+            font-size: .85rem;
             color: @hide-text-color;
+        }
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
         }
     }
 }

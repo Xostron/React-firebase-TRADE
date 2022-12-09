@@ -14,18 +14,19 @@ import { CardRoom } from "../components/card-room/CardRoom"
 import { MyModal } from '../components/UI/modal/MyModal'
 import { CardFormCreate } from "../components/card-form-create/CardFormCreate"
 import { DetailTradePage } from "./DetailTradePage"
-
+import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 export const TradesPage = () => {
     // hooks
     const history = useNavigate()
     const { auth, db } = useContext(firebaseContext)
-    const [user, loading, error] = useAuthState(auth)
-    const { currentTime } = useSchedular(callbackSchedular, 1000)
-
+    const [user] = useAuthState(auth)
+    // const [players, loading] = useCollectionData(query(collection(db, 'players')))
+    // const { currentTime } = useSchedular(callbackSchedular, 1000)
+    const [roomPlayers, setRoomPlayers] = useState([])
     // данные из БД
     const [rooms, setRooms] = useState([])
-
+    const [isPlayer, setIsPlayer] = useState(false)
     // модифицированные
     const [propsRooms, setPropsRooms] = useState([])
     const [timersSchedular, setTimersSchedular] = useState([])
@@ -48,22 +49,47 @@ export const TradesPage = () => {
     // ******************************HANDLERS******************************
 
     const handlerEnterAsWatch = (idx) => {
-        console.log('TradesPage handler as watch', idx)
+        console.log('TradesPage handler as watch', idx, rooms[idx])
         setModalRoom(true)
         setPropsDetailRoom(cbPropsDetailRoom(idx))
     }
 
-    const handlerEnterAsPlayer = (idx) => {
-        console.log('TradesPage handler as player', idx)
-        setPropsDetailRoom(cbPropsDetailRoom(idx))
+    const handlerEnterAsPlayer = async (idxRoom) => {
+        console.log('TradesPage handler as player', idxRoom)
+
+        // проверка на участника комнаты
+        let isAuthInRoom = await isMyRoom(idxRoom)
+
+        if (isAuthInRoom === true) {
+            // являюсь участником - заходим
+            let countPlayers = await getPlayers(idxRoom)
+            console.log('являюсь участником', countPlayers)
+        }
+        else {
+            // не являемся участником - проверка на регистрацию (лимит участников)
+            let countPlayers = await getPlayers(idxRoom)
+            console.log('не являюсь участником', countPlayers)
+            if (countPlayers.length >= 5) {
+                // превышен лимит участников - войти как наблюдатель
+                console.log("превышен лимит участников - как наблюдатель")
+
+            }
+            else {
+                // есть места - регистрируемся и заходим
+                console.log("есть свободные места")
+                savePlayer(idxRoom)
+            }
+        }
+        setPropsDetailRoom(cbPropsDetailRoom(idxRoom))
         setModalRoom(true)
     }
 
     const changeHandlerForm = (e) => {
         setItemRoom({ ...itemRoom, [e.target.name]: e.target.value })
     }
+
     // ****************************API firebase*****************************
-    // получить все комнаты
+    // получить все комнаты 
     const getRooms = async () => {
         // для использования в запросе where и orderBy одновременно, возможно, 
         // надо будет проиндексировать БД, 
@@ -97,7 +123,63 @@ export const TradesPage = () => {
             console.error("Error adding document: ", e);
         }
     }
-    // // удалить задачу
+    // создание участника комнаты (Войти как участник)
+    const savePlayer = async (idxRoom) => {
+        try {
+            const docRef = await addDoc(collection(db, "players"), {
+                idRoom: rooms[idxRoom].id,
+                uid: user.uid,
+                userName: user.email,
+                row1: '',
+                row2: 0,
+                row3: 0,
+                row4: 0,
+                row5_1: 0,
+                row5_2: 0,
+                row5_3: 0,
+                online: true,
+                createAT: serverTimestamp()
+            });
+            console.log("Document written with ID: ", docRef.id);
+            // присваиваем id Комнате для последующих операций обновления
+            // setRooms
+            // setTasks(tasks.map((val, index) => index === idx ? { ...val, id: docRef.id } : val))
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    }
+    // запрос являюсь ли участником комнаты
+    const isMyRoom = async (idxRoom) => {
+        try {
+            let q = query(collection(db, "players"),
+                where("idRoom", "==", rooms[idxRoom].id),
+                where("uid", "==", user.uid))
+            const querySnapshot = await getDocs(q)
+            let data
+            querySnapshot.forEach((doc) => {
+                data = doc.data()
+            })
+            if (data) return true
+            else return false
+        } catch (error) {
+            return false
+        }
+    }
+    // запрос являюсь участником комнаты
+    const getPlayers = async (idxRoom) => {
+        try {
+            let q = query(collection(db, "players"),
+                where("idRoom", "==", rooms[idxRoom].id))
+            const querySnapshot = await getDocs(q)
+            let data = []
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data())
+            })
+            return data
+        } catch (error) { }
+    }
+    // 
+    // удалить задачу
     // const delTask = async (idx) => {
     //     console.log('delete api = ', idx)
     //     let arr = tasks
@@ -163,11 +245,11 @@ export const TradesPage = () => {
     // обновление пропсов для ListSquare
     useEffect(() => {
         rooms && setPropsRooms(rooms.map(cbPropsRoom))
-        console.log('rooms', rooms)
     }, [rooms])
 
-    console.log("modal room", modalRoom, propsDetailRoom)
-
+    // console.log("modal room", rooms)
+    // console.log("players", players)
+    // console.log("players Room", roomPlayers)
     // *********************************Props**********************************
     // оглавление
     const titleProps = {
@@ -211,11 +293,12 @@ export const TradesPage = () => {
             value: itemRoom.durationRound
         }
     }
-    // формирование props для просмотра комнаты в DetailRoomPage 
+    // формирование props для просмотра комнаты в DetailTradePage 
     const cbPropsDetailRoom = (idx) => ({
-        room: rooms[idx]
+        room: rooms[idx],
+        uid: user.uid || null,
     })
-
+    console.log('PAGE = ', rooms)
     return (
         <div>
 

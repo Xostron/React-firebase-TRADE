@@ -1,0 +1,28 @@
+@import '../../style/color.less';
+@import '../../style/layout.less';
+
+th {
+    // background-color: rgb(39, 82, 67);
+    padding: 8px;
+    width: calc(70%/5);
+
+    // width: 5%;
+    &:first-child {
+        width: 30%;
+    }
+}
+
+thead {
+    background-color: @icon-color;
+
+}
+
+.column {
+    .display-flex-column;
+}
+
+tr {
+    &:nth-child(2n) {
+        background: @icon-color2;
+    }
+}

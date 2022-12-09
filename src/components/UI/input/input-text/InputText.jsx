@@ -21,6 +21,7 @@ export const InputText = ({ props }) => {
                 name={name}
                 onChange={changeHandler}
                 value={value}
+
             />
         </div>
     )

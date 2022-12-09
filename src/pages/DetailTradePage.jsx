@@ -7,14 +7,21 @@ import style from './DetailTradePage.module.less'
 
 // import { collection, addDoc, getDocs, serverTimestamp, orderBy, getDoc, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { firebaseContext } from ".."
+import { PlayersTable } from "../components/player-table/PlayersTable"
 // import { useSchedular } from "../hooks/useSchedular"
 // import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "firebase/storage";
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { collection, addDoc, getDocs, serverTimestamp, orderBy, where, query, updateDoc, doc, deleteDoc } from "firebase/firestore";
+
 
 export const DetailTradePage = ({ props }) => {
     const {
         room,
-        timer
+        uid,
+        timer,
     } = props
+    const { auth, db } = useContext(firebaseContext)
+    const [players, loading] = useCollectionData(query(collection(db, 'players')))
     // const { state } = useLocation()
     // const { id } = useParams()
     // const history = useNavigate()
@@ -23,8 +30,17 @@ export const DetailTradePage = ({ props }) => {
 
     // ******************************SHEDULER******************************
 
-    let begin = new Date(room.dateBegin).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
-    let finish = new Date(room.dateFinish).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
+    let begin = room && new Date(room.dateBegin).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
+    let finish = room && new Date(room.dateFinish).toLocaleString('ru', { dateStyle: 'medium', timeStyle: 'short' })
+
+
+
+    const propsPlayersTable = {
+        players,
+        uid
+    }
+
+    console.log("players DETAIL", players, room)
     return (
         <>
             {room ?
@@ -35,8 +51,9 @@ export const DetailTradePage = ({ props }) => {
                         <span>Окончание торгов {finish}</span>
                         <span>{timer}</span>
                     </div>
+                    <div>Ход торгов:</div>
                     <div className={style.players}>
-
+                        <PlayersTable props={propsPlayersTable} />
                     </div>
 
                 </div>

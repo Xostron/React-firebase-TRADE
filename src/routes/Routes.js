@@ -5,12 +5,13 @@ import { TradesPage } from "../pages/TradesPage";
 
 export const PublicRoutes = [
     { path: '/', element: <TradesPage /> },
-    { path: '/trades/:id', element: <DetailTradePage /> },
+    // { path: '/trades/:id', element: <DetailTradePage /> },
     { path: '/about', element: <AboutPage /> },
     { path: '*', element: <Navigate replace to='/' /> }
 ]
 
 export const PrivateRoutes = [
+    { path: '/', element: <TradesPage /> },
     { path: '/about', element: <AboutPage /> },
     { path: '*', element: <Navigate replace to='/about' /> }
 ]
