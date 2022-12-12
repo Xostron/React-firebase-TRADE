@@ -52,27 +52,50 @@ export const TradesPage = () => {
             // console.log('SHEDULAR = ', Date.parse(currentTime), propsDetailRoom.room)
             let begin = Date.parse(propsDetailRoom.room.dateBegin)
             let finish = Date.parse(propsDetailRoom.room.dateFinish)
+            let current = Date.parse(currentTime)
             let totalTime = finish - begin
-            let elapsedTime = Date.parse(currentTime) - begin
-            // console.log('SHEDULAR TOTAL = ', totalTime)
-            // console.log('SHEDULAR ELAPSED= ', elapsedTime)
-            let roundBig = Date.parse('2022-12-10T' + propsDetailRoom.room.durationRound)
-            let roundZero = Date.parse('2022-12-10T00:00:00')
-            let round = roundBig - roundZero
-            // console.log('SHEDULAR ROUND= ', round)
-            let countRound = parseInt(elapsedTime / round)
-            let moduloRound = elapsedTime % round
-            let remaining = round - moduloRound
-            // console.log('SHEDULAR ROUND= ', countRound, remaining)
-            let hh = parseInt(remaining / 3600000)
-            let mm = parseInt((remaining - hh * 3600000) / 60000)
-            let ss = (remaining - hh * 3600000 - mm * 60000) / 1000
-            console.log('SHEDULAR ROUND= ', countRound, remaining, `${hh}:${mm}:${ss}`)
-            setRemainingTime({ hh, mm, ss, countRound })
-        }
-        else {
 
+            if (current < finish && current > begin) {
+                // торги открыты
+                let elapsedTime = current - begin
+                // извлекаем длительность раунда 
+                let roundBig = Date.parse('2022-12-10T' + propsDetailRoom.room.durationRound)
+                let roundZero = Date.parse('2022-12-10T00:00:00')
+                let round = roundBig - roundZero
+                // console.log('SHEDULAR ROUND= ', roundBig, roundZero, round)
+                // кол-во прошедших райндов
+                let countRound = parseInt(elapsedTime / round)
+                let moduloRound = elapsedTime % round
+                let remaining = round - moduloRound
+                // результат время хода раунда
+                let hh = parseInt(remaining / 3600000)
+                let mm = parseInt((remaining - hh * 3600000) / 60000)
+                let ss = (remaining - hh * 3600000 - mm * 60000) / 1000
+                // console.log('SHEDULAR ROUND= ', countRound, remaining, `${hh}:${mm}:${ss}`)
+                setRemainingTime({ hh, mm, ss, countRound, message: '' })
+            }
+            else if (current > finish) {
+                // торги закрыты
+                setRemainingTime({
+                    hh: 0,
+                    mm: 0,
+                    ss: 0,
+                    countRound: 0,
+                    message: 'Торги закончились'
+                })
+            }
+            else if (current < begin) {
+                // торги еще не начались
+                setRemainingTime({
+                    hh: 0,
+                    mm: 0,
+                    ss: 0,
+                    countRound: 0,
+                    message: 'Торги еще не начались'
+                })
+            }
         }
+        else { }
     }
     // ******************************HANDLERS******************************
 
@@ -210,62 +233,7 @@ export const TradesPage = () => {
         } catch (error) { }
     }
     // 
-    // удалить задачу
-    // const delTask = async (idx) => {
-    //     console.log('delete api = ', idx)
-    //     let arr = tasks
-    //     if (tasks[idx].id) {
-    //         await deleteDoc(doc(db, "tasks", tasks[idx].id));
 
-    //         arr.splice(idx, 1)
-    //         setTasks([...arr])
-    //     }
-    //     else {
-    //         arr.splice(idx, 1)
-    //         setTasks([...arr])
-    //     }
-
-    // }
-    // // обновить задачу
-    // const updTask = async (idx) => {
-    //     // let updData = tasks[idx]
-    //     console.log('upd = ', tasks[idx])
-    //     const DocRef = doc(db, "tasks", tasks[idx].id);
-    //     await updateDoc(DocRef, {
-    //         "title": tasks[idx].title,
-    //         "info": tasks[idx].info,
-    //         "dateBegin": tasks[idx].dateBegin,
-    //         "dateFinish": tasks[idx].dateFinish,
-    //         "createAT": serverTimestamp()
-    //     });
-    // }
-    // // прочитать все задачи
-    // const getTasks = async () => {
-
-
-    //     let q = query(collection(db, "tasks"), where("uid", "==", user.uid), orderBy('createAT', 'desc'))
-
-
-    //     const querySnapshot = await getDocs(q)
-    //     // const q = query(collection(db, "cities"), where("capital", "==", true));
-
-    //     console.log('query', q)
-    //     querySnapshot.forEach((doc) => {
-    //         let data = { ...doc.data(), id: doc.id }
-    //         setTasks((prev) => [...prev, data])
-    //     })
-
-    // }
-    // const saveOrUpdTask = async (idx) => {
-    //     console.log('saveOrUpd = ', tasks[idx].id, tasks[idx])
-    //     if (tasks[idx].id === '') {
-    //         saveTask(idx)
-    //     }
-    //     else {
-    //         updTask(idx)
-    //     }
-    // }
-    // ****************************API firebase*****************************
 
     // *******************************EFFECT*******************************
 

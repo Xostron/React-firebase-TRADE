@@ -44,6 +44,7 @@ export const DetailTradePage = ({ props, timer }) => {
                         <span>Окончание торгов {finish}</span>
                         <span>Длительность хода {room.durationRound}</span>
                         <span>Пройдено ходов {timer.countRound}</span>
+                        {timer.message !== '' ? <span>{timer.message}</span> : null}
                     </div>
                     <div className={style.hms}>
                         <span>Ход торгов: </span>
